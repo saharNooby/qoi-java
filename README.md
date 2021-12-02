@@ -24,7 +24,7 @@ Add this library as a dependency to your build system. Maven example:
 <dependency>
     <groupId>me.saharnooby</groupId>
     <artifactId>qoi-java</artifactId>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 

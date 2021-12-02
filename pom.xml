@@ -6,7 +6,7 @@
 
     <groupId>me.saharnooby</groupId>
     <artifactId>qoi-java</artifactId>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
 
     <name>qoi-java</name>
     <description>A pure Java 8 implementation of Quite OK Image Format</description>
