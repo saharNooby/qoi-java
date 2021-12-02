@@ -139,4 +139,60 @@ public final class QOIUtil {
 		}
 	}
 
+	/**
+	 * Removes alpha channel from a 4-channel image, converting it to a 3-channel image.
+	 * If provided image is already 3-channel, this method will return the provided image.
+	 * @param image Source image.
+	 * @return Converted image.
+	 */
+	public static QOIImage removeAlpha(@NonNull QOIImage image) {
+		if (image.getChannels() != 4) {
+			return image;
+		}
+
+		int width = image.getWidth();
+		int height = image.getHeight();
+
+		byte[] pixelData = image.getPixelData();
+		byte[] newData = new byte[width * height * 3];
+
+		for (int i = 0, j = 0; i < pixelData.length; i += 4, j += 3) {
+			newData[j] = pixelData[i];
+			newData[j + 1] = pixelData[i + 1];
+			newData[j + 2] = pixelData[i + 2];
+		}
+
+		return new QOIImage(width, height, 3, image.getColorSpace(), newData);
+	}
+
+	/**
+	 * Adds alpha channel to a 3-channel image, converting it to a 4-channel image.
+	 * If provided image is already 4-channel, this method will return the provided image.
+	 * @param image Source image.
+	 * @param alpha Alpha channel value. Bits higher than 8 will be ignored.
+	 * @return Converted image.
+	 */
+	public static QOIImage addAlpha(@NonNull QOIImage image, int alpha) {
+		if (image.getChannels() != 3) {
+			return image;
+		}
+
+		int width = image.getWidth();
+		int height = image.getHeight();
+
+		byte[] pixelData = image.getPixelData();
+		byte[] newData = new byte[width * height * 4];
+
+		byte alphaByte = (byte) alpha;
+
+		for (int i = 0, j = 0; i < pixelData.length; i += 3, j += 4) {
+			newData[j] = pixelData[i];
+			newData[j + 1] = pixelData[i + 1];
+			newData[j + 2] = pixelData[i + 2];
+			newData[j + 3] = alphaByte;
+		}
+
+		return new QOIImage(width, height, 4, image.getColorSpace(), newData);
+	}
+
 }
