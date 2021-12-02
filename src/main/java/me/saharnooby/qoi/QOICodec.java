@@ -28,14 +28,7 @@ final class QOICodec {
 	private static final int HASH_TABLE_SIZE = 64;
 
 	static byte[] createHashTable() {
-		byte[] index = new byte[HASH_TABLE_SIZE * 4];
-
-		// Fill alpha with default value of 255
-		for (int i = 3; i < index.length; i += 4) {
-			index[i] = (byte) 0xFF;
-		}
-
-		return index;
+		return new byte[HASH_TABLE_SIZE * 4];
 	}
 
 	static int getHashTableIndex(int r, int g, int b, int a) {
