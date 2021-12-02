@@ -85,10 +85,10 @@ public final class QOIEncoder {
 			}
 
 			if (!prevEqualsCurrent) {
-				int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA) * 4;
+				int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA);
 
 				if (equals(pixelR, pixelG, pixelB, pixelA, index[indexPos], index[indexPos + 1], index[indexPos + 2], index[indexPos + 3])) {
-					out.write(QOI_INDEX | indexPos);
+					out.write(QOI_INDEX | (indexPos / 4));
 				} else {
 					index[indexPos] = (byte) pixelR;
 					index[indexPos + 1] = (byte) pixelG;

@@ -124,7 +124,7 @@ public final class QOIDecoder {
 					}
 				}
 
-				int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA) * 4;
+				int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA);
 				index[indexPos] = (byte) pixelR;
 				index[indexPos + 1] = (byte) pixelG;
 				index[indexPos + 2] = (byte) pixelB;

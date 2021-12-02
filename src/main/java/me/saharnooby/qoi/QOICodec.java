@@ -34,7 +34,7 @@ final class QOICodec {
 	static int getHashTableIndex(int r, int g, int b, int a) {
 		int hash = r ^ g ^ b ^ a;
 
-		return hash & (HASH_TABLE_SIZE - 1);
+		return (hash & (HASH_TABLE_SIZE - 1)) * 4;
 	}
 
 }
