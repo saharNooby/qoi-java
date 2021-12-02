@@ -71,7 +71,7 @@ public final class QOIUtil {
 
 	/**
 	 * Reads a QOI image from an input stream.
-	 * @param in Input stream.
+	 * @param in Input stream, should be buffered for optimal performance.
 	 * @return QOI image.
 	 * @throws InvalidQOIStreamException If provided data does not represent a valid QOI image.
 	 * @throws IOException On any IO error.
@@ -82,7 +82,7 @@ public final class QOIUtil {
 
 	/**
 	 * Reads a QOI image from an input stream.
-	 * @param in Input stream.
+	 * @param in Input stream, should be buffered for optimal performance.
 	 * @param channels Channel count, must be 0 (auto), 3 or 4.
 	 * @return QOI image.
 	 * @throws InvalidQOIStreamException If provided data does not represent a valid QOI image.
@@ -124,7 +124,15 @@ public final class QOIUtil {
 	 * @throws IOException On any IO error.
 	 */
 	public static void writeImage(@NonNull QOIImage image, @NonNull OutputStream out) throws IOException {
-		QOIEncoder.encode(image, out);
+		if (out instanceof BufferedOutputStream || out instanceof ByteArrayOutputStream) {
+			QOIEncoder.encode(image, out);
+		} else {
+			out = new BufferedOutputStream(out);
+
+			QOIEncoder.encode(image, out);
+
+			out.flush();
+		}
 	}
 
 	/**
