@@ -46,23 +46,25 @@ public final class QOIEncoder {
 
 		int run = 0;
 
-		int prevR = 0;
-		int prevG = 0;
-		int prevB = 0;
-		int prevA = 0xFF;
+		byte prevR = 0;
+		byte prevG = 0;
+		byte prevB = 0;
+		byte prevA = (byte) 0xFF;
 
-		int pixelR;
-		int pixelG;
-		int pixelB;
-		int pixelA = 0xFF;
+		byte pixelR;
+		byte pixelG;
+		byte pixelB;
+		byte pixelA = (byte) 0xFF;
+
+		boolean hasAlpha = channels == 4;
 
 		for (int pixelPos = 0; pixelPos < pixelData.length; pixelPos += channels) {
-			pixelR = pixelData[pixelPos] & 0xFF;
-			pixelG = pixelData[pixelPos + 1] & 0xFF;
-			pixelB = pixelData[pixelPos + 2] & 0xFF;
+			pixelR = pixelData[pixelPos];
+			pixelG = pixelData[pixelPos + 1];
+			pixelB = pixelData[pixelPos + 2];
 
-			if (channels == 4) {
-				pixelA = pixelData[pixelPos + 3] & 0xFF;
+			if (hasAlpha) {
+				pixelA = pixelData[pixelPos + 3];
 			}
 
 			boolean prevEqualsCurrent = equals(prevR, prevG, prevB, prevA, pixelR, pixelG, pixelB, pixelA);
@@ -90,10 +92,10 @@ public final class QOIEncoder {
 				if (equals(pixelR, pixelG, pixelB, pixelA, index[indexPos], index[indexPos + 1], index[indexPos + 2], index[indexPos + 3])) {
 					out.write(QOI_INDEX | (indexPos / 4));
 				} else {
-					index[indexPos] = (byte) pixelR;
-					index[indexPos + 1] = (byte) pixelG;
-					index[indexPos + 2] = (byte) pixelB;
-					index[indexPos + 3] = (byte) pixelA;
+					index[indexPos] = pixelR;
+					index[indexPos + 1] = pixelG;
+					index[indexPos + 2] = pixelB;
+					index[indexPos + 3] = pixelA;
 
 					int dr = pixelR - prevR;
 					int dg = pixelG - prevG;
@@ -163,8 +165,11 @@ public final class QOIEncoder {
 		return i > -3 && i < 2;
 	}
 
-	private static boolean equals(int r1, int g1, int b1, int a1, int r2, int g2, int b2, int a2) {
-		return r1 == r2 && g1 == g2 && b1 == b2 && a1 == a2;
+	private static boolean equals(byte r1, byte g1, byte b1, byte a1, byte r2, byte g2, byte b2, byte a2) {
+		return r1 == r2 &&
+				g1 == g2 &&
+				b1 == b2 &&
+				a1 == a2;
 	}
 
 }

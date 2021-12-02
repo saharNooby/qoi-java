@@ -62,12 +62,14 @@ public final class QOIDecoder {
 
 		byte[] index = createHashTable();
 
-		int pixelR = 0;
-		int pixelG = 0;
-		int pixelB = 0;
-		int pixelA = 0xFF;
+		byte pixelR = 0;
+		byte pixelG = 0;
+		byte pixelB = 0;
+		byte pixelA = (byte) 0xFF;
 
 		int run = 0;
+
+		boolean hasAlpha = channels == 4;
 
 		for (int pixelPos = 0; pixelPos < pixelDataLength; pixelPos += channels) {
 			if (run > 0) {
@@ -78,10 +80,10 @@ public final class QOIDecoder {
 				if ((b1 & QOI_MASK_2) == QOI_INDEX) {
 					int indexPos = (b1 ^ QOI_INDEX) * 4;
 
-					pixelR = index[indexPos] & 0xFF;
-					pixelG = index[indexPos + 1] & 0xFF;
-					pixelB = index[indexPos + 2] & 0xFF;
-					pixelA = index[indexPos + 3] & 0xFF;
+					pixelR = index[indexPos];
+					pixelG = index[indexPos + 1];
+					pixelB = index[indexPos + 2];
+					pixelA = index[indexPos + 3];
 				} else if ((b1 & QOI_MASK_3) == QOI_RUN_8) {
 					run = b1 & 0x1F;
 				} else if ((b1 & QOI_MASK_3) == QOI_RUN_16) {
@@ -108,35 +110,35 @@ public final class QOIDecoder {
 					pixelA += (b3 & 0x1F) - 16;
 				} else if ((b1 & QOI_MASK_4) == QOI_COLOR) {
 					if ((b1 & 8) != 0) {
-						pixelR = read(in);
+						pixelR = (byte) read(in);
 					}
 
 					if ((b1 & 4) != 0) {
-						pixelG = read(in);
+						pixelG = (byte) read(in);
 					}
 
 					if ((b1 & 2) != 0) {
-						pixelB = read(in);
+						pixelB = (byte) read(in);
 					}
 
 					if ((b1 & 1) != 0) {
-						pixelA = read(in);
+						pixelA = (byte) read(in);
 					}
 				}
 
 				int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA);
-				index[indexPos] = (byte) pixelR;
-				index[indexPos + 1] = (byte) pixelG;
-				index[indexPos + 2] = (byte) pixelB;
-				index[indexPos + 3] = (byte) pixelA;
+				index[indexPos] = pixelR;
+				index[indexPos + 1] = pixelG;
+				index[indexPos + 2] = pixelB;
+				index[indexPos + 3] = pixelA;
 			}
 
-			pixelData[pixelPos] = (byte) pixelR;
-			pixelData[pixelPos + 1] = (byte) pixelG;
-			pixelData[pixelPos + 2] = (byte) pixelB;
+			pixelData[pixelPos] = pixelR;
+			pixelData[pixelPos + 1] = pixelG;
+			pixelData[pixelPos + 2] = pixelB;
 
-			if (channels == 4) {
-				pixelData[pixelPos + 3] = (byte) pixelA;
+			if (hasAlpha) {
+				pixelData[pixelPos + 3] = pixelA;
 			}
 		}
 
@@ -154,7 +156,7 @@ public final class QOIDecoder {
 			throw new InvalidQOIStreamException("Unexpected end of stream");
 		}
 
-		return read & 0xFF;
+		return read;
 	}
 
 	private static int read32(@NonNull InputStream in) throws IOException {
