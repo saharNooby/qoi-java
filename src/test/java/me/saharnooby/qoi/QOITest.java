@@ -19,49 +19,73 @@ class QOITest {
 	@Test
 	void testEmptyImageRGB() throws Exception {
 		int size = 128;
+		int channels = 3;
 
-		testEncodingDecoding(new byte[3 * size * size], size, size, 3);
+		testEncodingDecoding(new byte[channels * size * size], size, size, channels);
 	}
 
 	@Test
 	void testEmptyImageRGBA() throws Exception {
 		int size = 128;
+		int channels = 4;
 
-		testEncodingDecoding(new byte[4 * size * size], size, size, 4);
+		testEncodingDecoding(new byte[channels * size * size], size, size, channels);
 	}
 
 	@Test
-	void testRandomImage() throws Exception {
+	void testRandomImageRGB() throws Exception {
 		int width = 800;
 		int height = 600;
+		int channels = 3;
 
-		Random random = new Random("seed".hashCode());
+		Random random = new Random("seed1".hashCode());
 
-		for (int channels : new int[] {3, 4}) {
-			byte[] data = new byte[width * height * channels];
+		byte[] data = new byte[width * height * channels];
 
-			random.nextBytes(data);
+		random.nextBytes(data);
 
-			testEncodingDecoding(data, width, height, channels);
-		}
+		testEncodingDecoding(data, width, height, channels);
 	}
 
 	@Test
-	void testNormalImage() throws Exception {
+	void testRandomImageRGBA() throws Exception {
+		int width = 800;
+		int height = 600;
+		int channels = 4;
+
+		Random random = new Random("seed2".hashCode());
+
+		byte[] data = new byte[width * height * channels];
+
+		random.nextBytes(data);
+
+		testEncodingDecoding(data, width, height, channels);
+	}
+
+	@Test
+	void testNormalImageRGB() throws Exception {
+		int channels = 3;
+
 		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream("/orange-cross.qoi"), "Test image not found");
 
-		QOIImage rgb = QOIDecoder.decode(new BufferedInputStream(in), 3);
+		QOIImage rgb = QOIDecoder.decode(new BufferedInputStream(in), channels);
 
-		in = Objects.requireNonNull(getClass().getResourceAsStream("/orange-cross.qoi"), "Test image not found");
+		testEncodingDecoding(rgb.getPixelData(), rgb.getWidth(), rgb.getHeight(), channels);
+	}
 
-		QOIImage rgba = QOIDecoder.decode(new BufferedInputStream(in), 4);
+	@Test
+	void testNormalImageRGBA() throws Exception {
+		int channels = 4;
 
-		testEncodingDecoding(rgb.getPixelData(), rgb.getWidth(), rgb.getHeight(), 3);
-		testEncodingDecoding(rgba.getPixelData(), rgba.getWidth(), rgba.getHeight(), 4);
+		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream("/orange-cross.qoi"), "Test image not found");
+
+		QOIImage rgba = QOIDecoder.decode(new BufferedInputStream(in), channels);
+
+		testEncodingDecoding(rgba.getPixelData(), rgba.getWidth(), rgba.getHeight(), channels);
 	}
 
 	/**
-	 * Tests that after encoding and decoding back data stays the same.
+	 * Tests that data stays the same after encoding and decoding back.
 	 */
 	private void testEncodingDecoding(byte @NonNull [] pixelData, int width, int height, int channels) throws Exception {
 		this.out.reset();
