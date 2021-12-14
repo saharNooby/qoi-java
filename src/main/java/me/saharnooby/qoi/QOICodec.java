@@ -5,25 +5,21 @@ package me.saharnooby.qoi;
  */
 final class QOICodec {
 
-	static final int QOI_SRGB = 0x00;
-	static final int QOI_SRGB_LINEAR_ALPHA = 0x01;
-	static final int QOI_LINEAR = 0x0F;
+	static final int QOI_SRGB = 0;
+	static final int QOI_LINEAR = 1;
 
-	static final int QOI_INDEX = 0x00;
-	static final int QOI_RUN_8 = 0x40;
-	static final int QOI_RUN_16 = 0x60;
-	static final int QOI_DIFF_8 = 0x80;
-	static final int QOI_DIFF_16 = 0xC0;
-	static final int QOI_DIFF_24 = 0xE0;
-	static final int QOI_COLOR = 0xF0;
+	static final int QOI_OP_INDEX = 0x00;
+	static final int QOI_OP_DIFF = 0x40;
+	static final int QOI_OP_LUMA = 0x80;
+	static final int QOI_OP_RUN = 0xC0;
+	static final int QOI_OP_RGB = 0xFE;
+	static final int QOI_OP_RGBA = 0xFF;
 
 	static final int QOI_MASK_2 = 0xC0;
-	static final int QOI_MASK_3 = 0xE0;
-	static final int QOI_MASK_4 = 0xF0;
 
 	static final int QOI_MAGIC = 'q' << 24 | 'o' << 16 | 'i' << 8 | 'f';
 
-	static final int QOI_PADDING = 4;
+	static final int QOI_PADDING = 8;
 
 	private static final int HASH_TABLE_SIZE = 64;
 
@@ -31,8 +27,11 @@ final class QOICodec {
 		return new byte[HASH_TABLE_SIZE * 4];
 	}
 
-	static int getHashTableIndex(int r, int g, int b, int a) {
-		int hash = r ^ g ^ b ^ a;
+	static int getHashTableIndex(byte r, byte g, byte b, byte a) {
+		int hash = (r & 0xFF) * 3 ^
+				(g & 0xFF) * 5 ^
+				(b & 0xFF) * 7 ^
+				(a & 0xFF) * 11;
 
 		return (hash & (HASH_TABLE_SIZE - 1)) * 4;
 	}

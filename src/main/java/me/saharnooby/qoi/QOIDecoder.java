@@ -77,53 +77,34 @@ public final class QOIDecoder {
 			} else {
 				int b1 = read(in);
 
-				if ((b1 & QOI_MASK_2) == QOI_INDEX) {
-					int indexPos = (b1 ^ QOI_INDEX) * 4;
+				if (b1 == QOI_OP_RGB) {
+					pixelR = (byte) read(in);
+					pixelG = (byte) read(in);
+					pixelB = (byte) read(in);
+				} else if (b1 == QOI_OP_RGBA) {
+					pixelR = (byte) read(in);
+					pixelG = (byte) read(in);
+					pixelB = (byte) read(in);
+					pixelA = (byte) read(in);
+				} else if ((b1 & QOI_MASK_2) == QOI_OP_INDEX) {
+					int indexPos = (b1 & ~QOI_MASK_2) * 4;
 
 					pixelR = index[indexPos];
 					pixelG = index[indexPos + 1];
 					pixelB = index[indexPos + 2];
 					pixelA = index[indexPos + 3];
-				} else if ((b1 & QOI_MASK_3) == QOI_RUN_8) {
-					run = b1 & 0x1F;
-				} else if ((b1 & QOI_MASK_3) == QOI_RUN_16) {
-					int b2 = read(in);
-
-					run = (((b1 & 0x1F) << 8) | (b2)) + 32;
-				} else if ((b1 & QOI_MASK_2) == QOI_DIFF_8) {
+				} else if ((b1 & QOI_MASK_2) == QOI_OP_DIFF) {
 					pixelR += ((b1 >> 4) & 0x03) - 2;
 					pixelG += ((b1 >> 2) & 0x03) - 2;
 					pixelB += (b1 & 0x03) - 2;
-				} else if ((b1 & QOI_MASK_3) == QOI_DIFF_16) {
+				} else if ((b1 & QOI_MASK_2) == QOI_OP_LUMA) {
 					int b2 = read(in);
-
-					pixelR += (b1 & 0x1F) - 16;
-					pixelG += (b2 >> 4) - 8;
-					pixelB += (b2 & 0x0F) - 8;
-				} else if ((b1 & QOI_MASK_4) == QOI_DIFF_24) {
-					int b2 = read(in);
-					int b3 = read(in);
-
-					pixelR += (((b1 & 0x0F) << 1) | (b2 >> 7)) - 16;
-					pixelG += ((b2 & 0x7C) >> 2) - 16;
-					pixelB += (((b2 & 0x03) << 3) | ((b3 & 0xE0) >> 5)) - 16;
-					pixelA += (b3 & 0x1F) - 16;
-				} else if ((b1 & QOI_MASK_4) == QOI_COLOR) {
-					if ((b1 & 8) != 0) {
-						pixelR = (byte) read(in);
-					}
-
-					if ((b1 & 4) != 0) {
-						pixelG = (byte) read(in);
-					}
-
-					if ((b1 & 2) != 0) {
-						pixelB = (byte) read(in);
-					}
-
-					if ((b1 & 1) != 0) {
-						pixelA = (byte) read(in);
-					}
+					int vg = (b1 & 0x3f) - 32;
+					pixelR += vg - 8 + ((b2 >> 4) & 0x0f);
+					pixelG += vg;
+					pixelB += vg - 8 + (b2 & 0x0f);
+				} else if ((b1 & QOI_MASK_2) == QOI_OP_RUN) {
+					run = (b1 & 0x3f);
 				}
 
 				int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA);
@@ -143,7 +124,9 @@ public final class QOIDecoder {
 		}
 
 		for (int i = 0; i < QOI_PADDING; i++) {
-			read(in);
+			if (read(in) != 0) {
+				throw new InvalidQOIStreamException("Expected zero-byte padding");
+			}
 		}
 
 		return new QOIImage(width, height, channels, colorSpace, pixelData);
@@ -173,8 +156,6 @@ public final class QOIDecoder {
 		switch (value) {
 			case QOI_SRGB:
 				return QOIColorSpace.SRGB;
-			case QOI_SRGB_LINEAR_ALPHA:
-				return QOIColorSpace.SRGB_LINEAR_ALPHA;
 			case QOI_LINEAR:
 				return QOIColorSpace.LINEAR;
 		}

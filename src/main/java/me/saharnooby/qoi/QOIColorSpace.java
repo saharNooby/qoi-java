@@ -6,13 +6,9 @@ package me.saharnooby.qoi;
 public enum QOIColorSpace {
 
 	/**
-	 * sRGB color space.
+	 * sRGB color space with linear alpha.
 	 */
 	SRGB,
-	/**
-	 * sRGB color space with linear alpha channel.
-	 */
-	SRGB_LINEAR_ALPHA,
 	/**
 	 * All channels are linear.
 	 */

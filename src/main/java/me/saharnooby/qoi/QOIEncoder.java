@@ -32,9 +32,6 @@ public final class QOIEncoder {
 			case SRGB:
 				out.write(QOI_SRGB);
 				break;
-			case SRGB_LINEAR_ALPHA:
-				out.write(QOI_SRGB_LINEAR_ALPHA);
-				break;
 			case LINEAR:
 				out.write(QOI_LINEAR);
 				break;
@@ -71,66 +68,54 @@ public final class QOIEncoder {
 
 			if (prevEqualsCurrent) {
 				run++;
-			}
 
-			if (run > 0 && (run == 0x2020 || !prevEqualsCurrent || pixelPos + channels == pixelData.length)) {
-				if (run < 33) {
-					run -= 1;
-					out.write(QOI_RUN_8 | run);
-				} else {
-					run -= 33;
-					out.write(QOI_RUN_16 | run >> 8);
-					out.write(run);
+				if (run == 62 || pixelPos + channels == pixelData.length) {
+					out.write(QOI_OP_RUN | (run - 1));
+
+					run = 0;
+				}
+			} else {
+				if (run > 0) {
+					out.write(QOI_OP_RUN | (run - 1));
+
+					run = 0;
 				}
 
-				run = 0;
-			}
-
-			if (!prevEqualsCurrent) {
 				int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA);
 
 				if (equals(pixelR, pixelG, pixelB, pixelA, index[indexPos], index[indexPos + 1], index[indexPos + 2], index[indexPos + 3])) {
-					out.write(QOI_INDEX | (indexPos / 4));
+					out.write(QOI_OP_INDEX | (indexPos / 4));
 				} else {
 					index[indexPos] = pixelR;
 					index[indexPos + 1] = pixelG;
 					index[indexPos + 2] = pixelB;
 					index[indexPos + 3] = pixelA;
 
-					int dr = pixelR - prevR;
-					int dg = pixelG - prevG;
-					int db = pixelB - prevB;
-					int da = pixelA - prevA;
+					if (prevA == pixelA) {
+						int dr = (pixelR & 0xFF) - (prevR & 0xFF);
+						int dg = (pixelG & 0xFF) - (prevG & 0xFF);
+						int db = (pixelB & 0xFF) - (prevB & 0xFF);
 
-					if (smallDiff(dr) && smallDiff(dg) && smallDiff(db) && smallDiff(da)) {
-						if (da == 0 && smallestDiff(dr) && smallestDiff(dg) && smallestDiff(db)) {
-							out.write(QOI_DIFF_8 | ((dr + 2) << 4) | (dg + 2) << 2 | (db + 2));
-						} else if (da == 0 && smallerDiff(dg) && smallerDiff(db)) {
-							out.write(QOI_DIFF_16 | (dr + 16));
-							out.write((dg + 8) << 4 | (db + 8));
+						int dgr = dr - dg;
+						int dgb = db - dg;
+
+						if (smallestDiff(dr) && smallestDiff(dg) && smallestDiff(db)) {
+							out.write(QOI_OP_DIFF | (dr + 2) << 4 | (dg + 2) << 2 | (db + 2));
+						} else if (smallerDiff(dgr) && smallDiff(dg) && smallerDiff(dgb)) {
+							out.write(QOI_OP_LUMA | (dg + 32));
+							out.write((dgr + 8) << 4 | (dgb + 8));
 						} else {
-							out.write(QOI_DIFF_24 | (dr + 16) >> 1);
-							out.write((dr + 16) << 7 | (dg + 16) << 2 | (db + 16) >> 3);
-							out.write((db + 16) << 5 | (da + 16));
-						}
-					} else {
-						out.write(QOI_COLOR | (dr != 0 ? 8 : 0) | (dg != 0 ? 4 : 0) | (db != 0 ? 2 : 0) | (da != 0 ? 1 : 0));
-
-						if (dr != 0) {
+							out.write(QOI_OP_RGB);
 							out.write(pixelR);
-						}
-
-						if (dg != 0) {
 							out.write(pixelG);
-						}
-
-						if (db != 0) {
 							out.write(pixelB);
 						}
-
-						if (da != 0) {
-							out.write(pixelA);
-						}
+					} else {
+						out.write(QOI_OP_RGBA);
+						out.write(pixelR);
+						out.write(pixelG);
+						out.write(pixelB);
+						out.write(pixelA);
 					}
 				}
 			}
@@ -154,7 +139,7 @@ public final class QOIEncoder {
 	}
 
 	private static boolean smallDiff(int i) {
-		return i > -17 && i < 16;
+		return i > -33 && i < 32;
 	}
 
 	private static boolean smallerDiff(int i) {
