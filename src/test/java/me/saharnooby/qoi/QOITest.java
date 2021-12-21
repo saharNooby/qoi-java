@@ -82,6 +82,16 @@ class QOITest {
 		testImage(4, "/orange-cross.qoi");
 	}
 
+	@Test
+	void testDiceRGB() throws Exception {
+		testImage(3, "/dice.qoi");
+	}
+
+	@Test
+	void testDiceRGBA() throws Exception {
+		testImage(4, "/dice.qoi");
+	}
+
 	private void testImage(int channels, @NonNull String imagePath) throws Exception {
 		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(imagePath), "Test image " + imagePath + " not found");
 
