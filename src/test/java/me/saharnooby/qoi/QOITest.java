@@ -63,25 +63,31 @@ class QOITest {
 	}
 
 	@Test
-	void testNormalImageRGB() throws Exception {
-		int channels = 3;
+	void testOrangeRGB() throws Exception {
+		testImage(3, "/orange.qoi");
+	}
 
-		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream("/orange-cross.qoi"), "Test image not found");
+	@Test
+	void testOrangeRGBA() throws Exception {
+		testImage(4, "/orange.qoi");
+	}
+
+	@Test
+	void testOrangeCrossRGB() throws Exception {
+		testImage(3, "/orange-cross.qoi");
+	}
+
+	@Test
+	void testOrangeCrossRGBA() throws Exception {
+		testImage(4, "/orange-cross.qoi");
+	}
+
+	private void testImage(int channels, @NonNull String imagePath) throws Exception {
+		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(imagePath), "Test image " + imagePath + " not found");
 
 		QOIImage rgb = QOIDecoder.decode(new BufferedInputStream(in), channels);
 
 		testEncodingDecoding(rgb.getPixelData(), rgb.getWidth(), rgb.getHeight(), channels);
-	}
-
-	@Test
-	void testNormalImageRGBA() throws Exception {
-		int channels = 4;
-
-		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream("/orange-cross.qoi"), "Test image not found");
-
-		QOIImage rgba = QOIDecoder.decode(new BufferedInputStream(in), channels);
-
-		testEncodingDecoding(rgba.getPixelData(), rgba.getWidth(), rgba.getHeight(), channels);
 	}
 
 	/**
