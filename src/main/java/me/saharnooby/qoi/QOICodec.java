@@ -19,7 +19,8 @@ final class QOICodec {
 
 	static final int QOI_MAGIC = 'q' << 24 | 'o' << 16 | 'i' << 8 | 'f';
 
-	static final int QOI_PADDING = 8;
+	// Seven 0x00 bytes followed by 0x01
+	static final byte[] QOI_PADDING = new byte[] {0, 0, 0, 0, 0, 0, 0, 1};
 
 	private static final int HASH_TABLE_SIZE = 64;
 

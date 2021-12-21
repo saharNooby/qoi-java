@@ -123,9 +123,9 @@ public final class QOIDecoder {
 			}
 		}
 
-		for (int i = 0; i < QOI_PADDING; i++) {
-			if (read(in) != 0) {
-				throw new InvalidQOIStreamException("Expected zero-byte padding");
+		for (byte b : QOI_PADDING) {
+			if (read(in) != b) {
+				throw new InvalidQOIStreamException("Invalid padding");
 			}
 		}
 

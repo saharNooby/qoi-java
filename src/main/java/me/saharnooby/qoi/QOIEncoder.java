@@ -126,9 +126,7 @@ public final class QOIEncoder {
 			prevA = pixelA;
 		}
 
-		for (int i = 0; i < QOI_PADDING; i++) {
-			out.write(0);
-		}
+		out.write(QOI_PADDING);
 	}
 
 	private static void write32(@NonNull OutputStream out, int value) throws IOException {
