@@ -4,8 +4,6 @@ A pure Java 8 implementation of [Quite OK Image Format](https://github.com/phobo
 
 This library has no runtime dependencies, including Java AWT. `BufferedImage` support is provided using separate module [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt).
 
-**Production use warning**: QOI file format is not finalized yet. You can track progress [here in the original repository](https://github.com/phoboslab/qoi/issues/48).
-
 ## How to Use
 
 ### Build and Install
@@ -24,7 +22,7 @@ Add this library as a dependency to your build system. Maven example:
 <dependency>
     <groupId>me.saharnooby</groupId>
     <artifactId>qoi-java</artifactId>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
