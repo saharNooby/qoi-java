@@ -1,3 +1,5 @@
+<img src="https://qoiformat.org/qoi-logo.svg" alt="QoiSharp" width="256"/>
+
 # qoi-java
 
 A pure Java 8 implementation of [Quite OK Image Format](https://github.com/phoboslab/qoi).
