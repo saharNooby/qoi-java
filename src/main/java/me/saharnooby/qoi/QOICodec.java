@@ -24,17 +24,24 @@ final class QOICodec {
 
 	private static final int HASH_TABLE_SIZE = 64;
 
-	static byte[] createHashTable() {
+	static byte[] createHashTableRGBA() {
 		return new byte[HASH_TABLE_SIZE * 4];
 	}
 
-	static int getHashTableIndex(byte r, byte g, byte b, byte a) {
-		int hash = (r & 0xFF) * 3 +
-				(g & 0xFF) * 5 +
-				(b & 0xFF) * 7 +
-				(a & 0xFF) * 11;
+	static byte[] createHashTableRGB() {
+		return new byte[HASH_TABLE_SIZE * 3];
+	}
+
+	static int getHashTableIndexRGBA(byte r, byte g, byte b, byte a) {
+		int hash = (r & 0xFF) * 3 + (g & 0xFF) * 5 + (b & 0xFF) * 7 + (a & 0xFF) * 11;
 
 		return (hash & 0x3F) << 2;
+	}
+
+	static int getHashTableIndexRGB(byte r, byte g, byte b) {
+		int hash = (r & 0xFF) * 3 + (g & 0xFF) * 5 + (b & 0xFF) * 7 + 2805;
+
+		return (hash & 0x3F) * 3;
 	}
 
 }

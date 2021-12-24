@@ -124,15 +124,7 @@ public final class QOIUtil {
 	 * @throws IOException On any IO error.
 	 */
 	public static void writeImage(@NonNull QOIImage image, @NonNull OutputStream out) throws IOException {
-		if (out instanceof BufferedOutputStream || out instanceof ByteArrayOutputStream) {
-			QOIEncoder.encode(image, out);
-		} else {
-			out = new BufferedOutputStream(out);
-
-			QOIEncoder.encode(image, out);
-
-			out.flush();
-		}
+		QOIEncoder.encode(image, out);
 	}
 
 	/**

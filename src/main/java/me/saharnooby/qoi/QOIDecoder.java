@@ -101,7 +101,7 @@ public final class QOIDecoder {
 
 		byte[] pixelData = new byte[pixelDataLength];
 
-		byte[] index = createHashTable();
+		byte[] index = createHashTableRGBA();
 
 		byte pixelR = 0;
 		byte pixelG = 0;
@@ -161,7 +161,7 @@ public final class QOIDecoder {
 				}
 			}
 
-			int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA);
+			int indexPos = getHashTableIndexRGBA(pixelR, pixelG, pixelB, pixelA);
 			index[indexPos] = pixelR;
 			index[indexPos + 1] = pixelG;
 			index[indexPos + 2] = pixelB;
@@ -182,7 +182,7 @@ public final class QOIDecoder {
 
 		byte[] pixelData = new byte[pixelDataLength];
 
-		byte[] index = createHashTable();
+		byte[] index = createHashTableRGBA();
 
 		byte pixelR = 0;
 		byte pixelG = 0;
@@ -243,7 +243,7 @@ public final class QOIDecoder {
 				}
 			}
 
-			int indexPos = getHashTableIndex(pixelR, pixelG, pixelB, pixelA);
+			int indexPos = getHashTableIndexRGBA(pixelR, pixelG, pixelB, pixelA);
 			index[indexPos] = pixelR;
 			index[indexPos + 1] = pixelG;
 			index[indexPos + 2] = pixelB;
