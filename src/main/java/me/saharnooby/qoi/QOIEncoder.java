@@ -24,7 +24,7 @@ public final class QOIEncoder {
 
 		byte[] pixelData = image.getPixelData();
 
-		// This custom buffering class is slightly faster than BufferedInputStream
+		// This custom buffering class is slightly faster than BufferedOutputStream
 		Output out = new Output(outputStream);
 
 		out.writeInt(QOI_MAGIC);
