@@ -92,10 +92,35 @@ class QOITest {
 		testImage(4, "/dice.qoi");
 	}
 
+	@Test
+	void testDecoderDoesNotReadPastTheImage() throws Exception {
+		for (int channels : new int[] {3, 4}) {
+			InputStream in = Objects.requireNonNull(getClass().getResourceAsStream("/dice.qoi"), "Test image not found");
+
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+			copy(in, out);
+
+			out.write(1);
+			out.write(2);
+			out.write(3);
+			out.write(4);
+
+			ByteArrayInputStream bytesIn = new ByteArrayInputStream(out.toByteArray());
+
+			QOIDecoder.decode(bytesIn, channels, true);
+
+			Assertions.assertEquals(1, bytesIn.read());
+			Assertions.assertEquals(2, bytesIn.read());
+			Assertions.assertEquals(3, bytesIn.read());
+			Assertions.assertEquals(4, bytesIn.read());
+		}
+	}
+
 	private void testImage(int channels, @NonNull String imagePath) throws Exception {
 		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(imagePath), "Test image " + imagePath + " not found");
 
-		QOIImage rgb = QOIDecoder.decode(new BufferedInputStream(in), channels);
+		QOIImage rgb = QOIDecoder.decode(in, channels);
 
 		testEncodingDecoding(rgb.getPixelData(), rgb.getWidth(), rgb.getHeight(), channels);
 	}
@@ -139,6 +164,14 @@ class QOITest {
 		Assertions.assertEquals(0, in.available(), "Expected input stream to be read fully");
 
 		return decoded;
+	}
+
+	private static void copy(@NonNull InputStream in, @NonNull OutputStream out) throws IOException {
+		byte[] buf = new byte[8192];
+		int read;
+		while ((read = in.read(buf)) != -1) {
+			out.write(buf, 0, read);
+		}
 	}
 
 }

@@ -34,7 +34,7 @@ final class QOICodec {
 				(b & 0xFF) * 7 +
 				(a & 0xFF) * 11;
 
-		return (hash % HASH_TABLE_SIZE) * 4;
+		return (hash & 0x3F) << 2;
 	}
 
 }
