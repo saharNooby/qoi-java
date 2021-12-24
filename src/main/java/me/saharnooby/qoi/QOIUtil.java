@@ -112,7 +112,7 @@ public final class QOIUtil {
 	 * @throws IOException On any IO error.
 	 */
 	public static QOIImage readFile(@NonNull File file, int channels) throws IOException {
-		try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
+		try (InputStream in = new FileInputStream(file)) {
 			return readImage(in, channels);
 		}
 	}
@@ -134,7 +134,7 @@ public final class QOIUtil {
 	 * @throws IOException On any IO error.
 	 */
 	public static void writeImage(@NonNull QOIImage image, @NonNull File file) throws IOException {
-		try (OutputStream out = new BufferedOutputStream(new FileOutputStream(file))) {
+		try (OutputStream out = new FileOutputStream(file)) {
 			writeImage(image, out);
 		}
 	}
