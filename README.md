@@ -4,7 +4,7 @@
 
 A pure Java 8 implementation of [Quite OK Image Format](https://github.com/phoboslab/qoi).
 
-This library has no runtime dependencies, including Java AWT. `BufferedImage` support is provided using separate module [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt).
+This library has no runtime dependencies, including Java AWT. `ImageIO`/`BufferedImage` support is provided using separate module [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt).
 
 ## How to Use
 
@@ -27,6 +27,8 @@ Add this library as a dependency to your build system. Maven example:
     <version>1.0.0</version>
 </dependency>
 ```
+
+Additionally, if you want to use QOI with `ImageIO` API, you need to install [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt). 
 
 ### Usage
 
@@ -52,13 +54,25 @@ QOIImage orangeImage = QOIUtil.createFromPixelData(pixelData, 1, 1, 4);
 QOIUtil.writeImage(orangeImage, new File("orange.qoi"));
 ```
 
-### Use with `BufferedImage`
+### Use with `ImageIO`
 
-To convert QOI images to BufferedImages and back, you need to also add [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt) dependency.
+To use QOI with `ImageIO`, you need to also install and add [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt) dependency. It provides an [ImageIO plugin](https://docs.oracle.com/javase/8/docs/technotes/guides/imageio/spec/extending.fm1.html), which installs automatically using [service provider mechanism](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html).
 
-Use methods in class `me.saharnooby.qoi.QOIUtilAWT`.
+To read and write QOI images, use standard `ImageIO` methods:
 
-Usage example:
+```java
+// Read QOI image from a file
+BufferedImage image = ImageIO.read(new File("image.qoi"));
+
+Objects.requireNonNull(image, "Invalid QOI image");
+
+// Write QOI image into a file
+if (!ImageIO.write(image, "QOI", new File("copy.qoi"))) {
+	throw new IllegalStateException("Image type is not supported");
+}
+```
+
+To convert QOI images into BufferedImages and back, use methods in class `me.saharnooby.qoi.QOIUtilAWT`:
 
 ```java
 // Convert PNG to QOI
@@ -78,4 +92,4 @@ No AWT classes are used, so it should be compatible with Android. Please report 
 
 ## Versioning
 
-This project uses semantic versioning. Until QOI file format is finalized, major version will remain 0.
+This project uses semantic versioning.
