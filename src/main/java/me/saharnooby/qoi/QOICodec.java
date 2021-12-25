@@ -39,7 +39,7 @@ final class QOICodec {
 	}
 
 	static int getHashTableIndexRGB(byte r, byte g, byte b) {
-		int hash = (r & 0xFF) * 3 + (g & 0xFF) * 5 + (b & 0xFF) * 7 + 2805;
+		int hash = (r & 0xFF) * 3 + (g & 0xFF) * 5 + (b & 0xFF) * 7 + 0xFF * 11;
 
 		return (hash & 0x3F) * 3;
 	}

@@ -260,6 +260,8 @@ public final class QOIDecoder {
 
 	private static final class Input {
 
+		private static final int BUFFER_SIZE = 8192;
+
 		private final InputStream in;
 		private final byte[] buffer;
 		private int position;
@@ -267,12 +269,7 @@ public final class QOIDecoder {
 
 		private Input(@NonNull InputStream in, boolean useBuffer) {
 			this.in = in;
-
-			if (useBuffer) {
-				this.buffer = new byte[8192];
-			} else {
-				this.buffer = null;
-			}
+			this.buffer = useBuffer ? new byte[BUFFER_SIZE] : null;
 		}
 
 		public byte read() throws IOException {

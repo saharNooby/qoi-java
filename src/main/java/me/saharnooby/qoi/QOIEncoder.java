@@ -31,17 +31,7 @@ public final class QOIEncoder {
 		out.writeInt(image.getWidth());
 		out.writeInt(image.getHeight());
 		out.write(image.getChannels());
-
-		switch (image.getColorSpace()) {
-			case SRGB:
-				out.write(QOI_SRGB);
-				break;
-			case LINEAR:
-				out.write(QOI_LINEAR);
-				break;
-			default:
-				throw new IllegalStateException("Unsupported color space");
-		}
+		out.writeColorSpace(image.getColorSpace());
 
 		// Duplicating encoder for two specific cases improves performance almost by 20% for RGBA images
 		if (channels == 3) {
@@ -287,7 +277,20 @@ public final class QOIEncoder {
 			this.written += 4;
 		}
 
-		private void writeInt(int value) throws IOException {
+		public void writeColorSpace(@NonNull QOIColorSpace colorSpace) throws IOException {
+			switch (colorSpace) {
+				case SRGB:
+					write(QOI_SRGB);
+					break;
+				case LINEAR:
+					write(QOI_LINEAR);
+					break;
+				default:
+					throw new IllegalStateException("Unsupported color space");
+			}
+		}
+
+		public void writeInt(int value) throws IOException {
 			write(value >> 24);
 			write(value >> 16);
 			write(value >> 8);
