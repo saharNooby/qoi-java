@@ -12,7 +12,7 @@ On average, when using `qoi-java-awt` as an `ImageIO` plugin, QOI can encode **7
 
 To get maximum performance, you can skip `ImageIO` and use pixel data arrays directly.
 
-See full results in [BENCHMARK.md](https://github.com/saharNooby/qoi-java/blob/main/BENCHMAR.md).
+See full results in [BENCHMARK.md](https://github.com/saharNooby/qoi-java/blob/main/BENCHMARK.md).
 
 Before choosing or rejecting QOI for your project, it is recommended to run benchmarks yourself with appropriate sample files. [Here is benchmark code](https://github.com/saharNooby/qoi-java-awt/blob/main/src/test/java/me/saharnooby/qoi/benchmark/FormatComparisonBenchmark.java) used to produce above results.
 
