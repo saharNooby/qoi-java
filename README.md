@@ -6,6 +6,16 @@ A pure Java 8 implementation of [Quite OK Image Format](https://github.com/phobo
 
 This library has no runtime dependencies, including Java AWT. `ImageIO`/`BufferedImage` support is provided using separate module [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt).
 
+### Performance
+
+On average, when using `qoi-java-awt` as an `ImageIO` plugin, QOI can encode **7 times faster** than PNG with default settings and decode **2 times faster**, while having **15% less size** than PNG.
+
+To get maximum performance, you can skip `ImageIO` and use pixel data arrays directly.
+
+See full results in [BENCHMARK.md](https://github.com/saharNooby/qoi-java/blob/main/BENCHMAR.md).
+
+Before choosing or rejecting QOI for your project, it is recommended to run benchmarks yourself with appropriate sample files. [Here is benchmark code](https://github.com/saharNooby/qoi-java-awt/blob/main/src/test/java/me/saharnooby/qoi/benchmark/FormatComparisonBenchmark.java) used to produce above results.
+
 ## How to Use
 
 ### Build and Install
