@@ -18,17 +18,11 @@ Before choosing or rejecting QOI for your project, it is recommended to run benc
 
 ## How to Use
 
-### Build and Install
+### Add as a dependency
 
-You will need Git, Maven and JDK 8 or higher.
+This library is available in Maven Central.
 
-```shell
-git clone https://github.com/saharNooby/qoi-java.git
-cd qoi-java
-mvn clean install
-```
-
-Add this library as a dependency to your build system. Maven example:
+#### Maven
 
 ```xml
 <dependency>
@@ -36,15 +30,31 @@ Add this library as a dependency to your build system. Maven example:
     <artifactId>qoi-java</artifactId>
     <version>1.2.0</version>
 </dependency>
+<!-- Also add this, if you want to use QOI with ImageIO -->
+<dependency>
+    <groupId>me.saharnooby</groupId>
+    <artifactId>qoi-java-awt</artifactId>
+    <version>1.2.0</version>
+</dependency>
 ```
 
-Additionally, if you want to use QOI with `ImageIO` API, you need to install [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt). 
+#### Gradle
+
+```groovy
+dependencies {
+	implementation 'me.saharnooby:qoi-java:1.2.0'
+	// Also add this, if you want to use QOI with ImageIO
+	implementation 'me.saharnooby:qoi-java-awt:1.2.0'
+}
+```
+
+#### Other build systems
+
+You can download prebuilt JARs from [GitHub releases](https://github.com/saharNooby/qoi-java/releases) or build them yourself.
 
 ### Usage
 
-Use methods in class `me.saharnooby.qoi.QOIUtil`.
-
-Usage example:
+Use methods in class `me.saharnooby.qoi.QOIUtil`:
 
 ```java
 // Read image from a file
@@ -64,9 +74,9 @@ QOIImage orangeImage = QOIUtil.createFromPixelData(pixelData, 1, 1, 4);
 QOIUtil.writeImage(orangeImage, new File("orange.qoi"));
 ```
 
-### Use with `ImageIO`
+#### Usage with `ImageIO`
 
-To use QOI with `ImageIO`, you need to also install and add [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt) dependency. It provides an [ImageIO plugin](https://docs.oracle.com/javase/8/docs/technotes/guides/imageio/spec/extending.fm1.html), which installs automatically using [service provider mechanism](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html).
+To use QOI with `ImageIO`, you need to also add [qoi-java-awt](https://github.com/saharNooby/qoi-java-awt) dependency. It provides an [ImageIO plugin](https://docs.oracle.com/javase/8/docs/technotes/guides/imageio/spec/extending.fm1.html), which installs automatically using [service provider mechanism](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html).
 
 To read and write QOI images, use standard `ImageIO` methods:
 
@@ -94,6 +104,16 @@ QOIUtil.writeImage(qoi, new File("image.qoi"));
 QOIImage secondImage = QOIUtil.readFile(new File("second-image.qoi"));
 BufferedImage convertedImage = QOIUtilAWT.convertToBufferedImage(secondImage);
 ImageIO.write(convertedImage, "PNG", new File("second-image.png"));
+```
+
+## Building
+
+You will need Git, Maven and JDK 8 or higher.
+
+```shell
+git clone https://github.com/saharNooby/qoi-java.git
+cd qoi-java
+mvn clean install
 ```
 
 ## Compatibility
