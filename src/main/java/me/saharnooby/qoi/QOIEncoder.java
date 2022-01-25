@@ -49,7 +49,7 @@ public final class QOIEncoder {
 
 	// Encode 3-channel RGB buffer
 	private static void encode3(@NonNull Output out, byte @NonNull [] pixelData) throws IOException {
-		byte[] index = createHashTableRGB();
+		byte[] index = createHashTableRGBA();
 
 		int run = 0;
 
@@ -83,16 +83,17 @@ public final class QOIEncoder {
 
 				int indexPos = getHashTableIndexRGB(pixelR, pixelG, pixelB);
 
-				if (equals(pixelR, pixelG, pixelB, index[indexPos], index[indexPos + 1], index[indexPos + 2])) {
-					out.write(QOI_OP_INDEX | (indexPos / 3));
+				if (equals(pixelR, pixelG, pixelB, (byte) 0xFF, index[indexPos], index[indexPos + 1], index[indexPos + 2], index[indexPos + 3])) {
+					out.write(QOI_OP_INDEX | (indexPos / 4));
 				} else {
 					index[indexPos] = pixelR;
 					index[indexPos + 1] = pixelG;
 					index[indexPos + 2] = pixelB;
+					index[indexPos + 3] = (byte) 0xFF;
 
-					int dr = (pixelR & 0xFF) - (prevR & 0xFF);
-					int dg = (pixelG & 0xFF) - (prevG & 0xFF);
-					int db = (pixelB & 0xFF) - (prevB & 0xFF);
+					byte dr = (byte) (pixelR - prevR);
+					byte dg = (byte) (pixelG - prevG);
+					byte db = (byte) (pixelB - prevB);
 
 					if (smallestDiff(dr) && smallestDiff(dg) && smallestDiff(db)) {
 						out.write(QOI_OP_DIFF | (dr + 2) << 4 | (dg + 2) << 2 | (db + 2));
@@ -169,9 +170,9 @@ public final class QOIEncoder {
 					index[indexPos + 3] = pixelA;
 
 					if (prevA == pixelA) {
-						int dr = (pixelR & 0xFF) - (prevR & 0xFF);
-						int dg = (pixelG & 0xFF) - (prevG & 0xFF);
-						int db = (pixelB & 0xFF) - (prevB & 0xFF);
+						byte dr = (byte) (pixelR - prevR);
+						byte dg = (byte) (pixelG - prevG);
+						byte db = (byte) (pixelB - prevB);
 
 						if (smallestDiff(dr) && smallestDiff(dg) && smallestDiff(db)) {
 							out.write(QOI_OP_DIFF | (dr + 2) << 4 | (dg + 2) << 2 | (db + 2));

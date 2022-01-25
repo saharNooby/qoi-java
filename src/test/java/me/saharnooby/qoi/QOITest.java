@@ -117,6 +117,28 @@ class QOITest {
 		}
 	}
 
+	@Test
+	void testReferenceImplementationMatchDice() throws Exception {
+		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream("/dice.qoi"), "Test image not found");
+		byte[] expectedBytes = readFully(in);
+
+		QOIImage image = QOIUtil.readImage(new ByteArrayInputStream(expectedBytes));
+		byte[] actualBytes = encodeToBytes(image);
+
+		Assertions.assertArrayEquals(expectedBytes, actualBytes);
+	}
+
+	@Test
+	void testReferenceImplementationMatchTestcard() throws Exception {
+		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream("/testcard.qoi"), "Test image not found");
+		byte[] expectedBytes = readFully(in);
+
+		QOIImage image = QOIUtil.readImage(new ByteArrayInputStream(expectedBytes));
+		byte[] actualBytes = encodeToBytes(image);
+
+		Assertions.assertArrayEquals(expectedBytes, actualBytes);
+	}
+
 	private void testImage(int channels, @NonNull String imagePath) throws Exception {
 		InputStream in = Objects.requireNonNull(getClass().getResourceAsStream(imagePath), "Test image " + imagePath + " not found");
 
@@ -172,6 +194,18 @@ class QOITest {
 		while ((read = in.read(buf)) != -1) {
 			out.write(buf, 0, read);
 		}
+	}
+
+	private static byte[] readFully(@NonNull InputStream in) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		copy(in, out);
+		return out.toByteArray();
+	}
+
+	private static byte[] encodeToBytes(@NonNull QOIImage image) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		QOIUtil.writeImage(image, out);
+		return out.toByteArray();
 	}
 
 }
