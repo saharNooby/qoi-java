@@ -28,13 +28,13 @@ This library is available in Maven Central.
 <dependency>
     <groupId>me.saharnooby</groupId>
     <artifactId>qoi-java</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 <!-- Also add this, if you want to use QOI with ImageIO -->
 <dependency>
     <groupId>me.saharnooby</groupId>
     <artifactId>qoi-java-awt</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
@@ -42,9 +42,9 @@ This library is available in Maven Central.
 
 ```groovy
 dependencies {
-	implementation 'me.saharnooby:qoi-java:1.2.0'
+	implementation 'me.saharnooby:qoi-java:1.2.1'
 	// Also add this, if you want to use QOI with ImageIO
-	implementation 'me.saharnooby:qoi-java-awt:1.2.0'
+	implementation 'me.saharnooby:qoi-java-awt:1.2.1'
 }
 ```
 
